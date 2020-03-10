@@ -4,8 +4,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 const dotenv = require('dotenv').config();
 const Shopify = require('shopify-api-node');
-
-app.use(bodyParser.json());
+const cors = require('cors');
 
 const shopify = new Shopify({
   shopName: process.env.SHOP_NAME,
@@ -13,6 +12,12 @@ const shopify = new Shopify({
   password: process.env.PASSWORD
 });
 
+const corsOptions = {
+  origin: ["https://puravidabracelets.com", /\.puravidabracelets\.com$/]
+};
+
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
 app.post('/',(req, res) => {
   console.info('REQUEST BODY',req.body);
 
