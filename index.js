@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 const dotenv = require('dotenv').config();
 const Shopify = require('shopify-api-node');
 const cors = require('cors');
@@ -19,10 +19,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.post('/',(req, res) => {
-  console.info('REQUEST BODY',req.body);
 
   const id = parseInt(req.body.customerId);
-  const products = req.body.products;
+  const products = req.body.products ? req.body.products : false;
 
   shopify.metafield
   .create({
@@ -34,21 +33,21 @@ app.post('/',(req, res) => {
     owner_id: id
   })
   .then(
-    (metafield) => console.log('SUCCESS',metafield),
-    (err) => console.error(err)
+    (metafield) => {
+      console.log(metafield);
+      return res.status(200).send({
+        success: 'true',
+        message: 'Customer wishlist successfully updated.'
+      });
+    },
+    (err) => {
+      console.error(err);
+      return res.status(400).send({
+        success: 'false',
+        message: err
+      });
+    }
   );
-
-  if (id && products) {
-    return res.status(200).send({
-      success: 'true',
-      message: 'Customer wishlist successfully updated.'
-    });
-  } else {
-    return res.status(400).send({
-      success: 'false',
-      message: 'Missing param, failed to update customer wishlist.'
-    });
-  }
 });
 
 app.listen(port,() => {
