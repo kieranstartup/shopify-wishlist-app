@@ -23,7 +23,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.post('/',(req, res) => {
 
+  // Customer ID must be an integer
   const id = parseInt(req.body.customerId);
+  // Metafields can't be set to an empy value so false is used when wishlist is empty.
   const products = req.body.products ? req.body.products : false;
 
   shopify.metafield
@@ -31,7 +33,7 @@ app.post('/',(req, res) => {
     key: 'wishlist',
     value: products,
     value_type: 'string',
-    namespace: 'puravida',
+    namespace: process.env.METAFIELD_NAMESPACE,
     owner_resource: 'customer',
     owner_id: id
   })
