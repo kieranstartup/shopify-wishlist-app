@@ -23,11 +23,13 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.post('/',(req, res) => {
 
-  // Customer ID must be an integer
+  // Customer ID must be an integer.
   const id = parseInt(req.body.customerId);
+
   // Metafields can't be set to an empy value so false is used when wishlist is empty.
   const products = req.body.products ? req.body.products : false;
 
+  // Shopify REST API is capapble if creating and overwriting an existing metafield which saves a request. If using GraphQL you would need to first request the customer's metafields to get the ID of the wishlist metafield.
   shopify.metafield
   .create({
     key: 'wishlist',
@@ -47,8 +49,9 @@ app.post('/',(req, res) => {
     },
     (err) => {
       console.error(err);
+      // Capture error in Sentry if Shopify API rate limit is reached.
       Sentry.captureException(err);
-      return res.status(400).send({
+      return res.status(429).send({
         success: 'false',
         message: err
       });
