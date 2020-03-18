@@ -16,12 +16,12 @@ const shopify = new Shopify({
 });
 
 const corsOptions = {
-  origin: [`https://puravidabracelets.${process.env.DOMAIN}`, /\.puravidabracelets\.com$/]
+  origin: ["https://puravidabracelets.com", /\.puravidabracelets\.com$/]
 };
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.post(`/${process.env.STORE}/`,(req, res) => {
+app.post('/',(req, res) => {
 
   // Customer ID must be an integer.
   const id = parseInt(req.body.customerId);
