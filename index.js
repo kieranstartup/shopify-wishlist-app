@@ -15,13 +15,13 @@ const shopify = new Shopify({
   password: process.env.PASSWORD
 });
 
-// const corsOptions = {
-//   origin: [`https://puravidabracelets.${process.env.DOMAIN}`, /\.puravidabracelets\.com$/]
-// };
+const corsOptions = {
+  origin: [`https://puravidabracelets.${process.env.DOMAIN}`, /\.puravidabracelets\.com$/]
+};
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.post(`/${process.env.STORE}/`,cors(),(req, res) => {
+app.post(`/${process.env.STORE}/`,(req, res) => {
 
   // Customer ID must be an integer.
   const id = parseInt(req.body.customerId);
